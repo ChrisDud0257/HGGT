@@ -20,8 +20,8 @@ datasets:
     dataroot_all_gt: /Path to/DF2K_OST subimages
 ```
 
-## PosNegGT Training Dataset
-We provide the training dataset, named(0-20193), it has 20193 sets of training enhanced GTs together with their label information.
+## HGGT Training Dataset
+We provide the training dataset, named HGGT, it has 20193 sets of training enhanced GTs together with their label information.
 
 - Firstly, please download the training images from [GoogleDrive](https://drive.google.com/file/d/1RVc6zZ8XfcAxA11HCDwKLtScysdP6MK1/view?usp=share_link). The dataset structures are as follows:
 ```bash
