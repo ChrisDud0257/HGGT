@@ -1,0 +1,177 @@
+# general settings
+name: EnhanceELAN_04
+model_type: EnhancementModel
+scale: 1
+num_gpu: auto  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+# ----------------- options for synthesizing training data in RealESRGANModel ----------------- #
+# the first degradation process
+resize_prob: [0.1, 0.85, 0.05]  # up, down, keep
+resize_range: [0.9, 1.1]
+gaussian_noise_prob: 0.5
+noise_range: [0.5, 6.5]
+poisson_scale_range: [0.05, 0.45]
+gray_noise_prob: 0.1
+jpeg_range: [80, 95]
+
+pre_pad: 0
+tile_size: 480
+tile_pad: 24
+
+gt_size: 96
+queue_size: 40
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: DF2K_OST
+    type: EnhancementDataset
+
+    dataroot_gt: /home/chendu/data2_hdd10t/chendu/dataset/DF2K_OST/multiscale_HR_sub_400
+    meta_info: /home/chendu/data2_hdd10t/chendu/dataset/DF2K_OST/meta_info/meta_info_DF2K_OST_multiscale_HR_sub_400.txt
+
+    io_backend:
+      type: disk
+
+    blur_kernel_size_min: 1
+    blur_kernel_size_max: 4
+
+    kernel_list: ['iso', 'aniso']
+    kernel_prob: [0.7, 0.3]
+    sinc_prob: 0.1
+    blur_sigma: [0.5, 1.0]
+
+    use_hflip: True
+    use_rot: True
+
+    # data loader
+    use_shuffle: true
+    num_worker_per_gpu: 4
+    batch_size_per_gpu: 4
+    dataset_enlarge_ratio: 1
+    prefetch_mode: cuda
+    pin_memory: true
+
+  val:
+    name: Set5
+    type: SingleImageDataset
+    dataroot_lq: datasets/Set5
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: ELAN
+  scale: 1
+  img_range: 255.
+  colors: 3
+  window_sizes: [4,8,16]
+  m_elan: 36
+  c_elan: 180
+  n_share: 0
+  r_expand: 2
+  rgb_mean: [0.4488, 0.4371, 0.4040]
+
+network_d:
+  type: RealESRGANUNetDiscriminatorSN
+  num_in_ch: 3
+  num_feat: 64
+  skip_connection: true
+
+# path
+path:
+  # use the pre-trained Real-ESRNet model
+  pretrain_network_g: ~
+  param_key_g: params
+  strict_load_g: false
+  resume_state: ~
+
+# training settings
+train:
+  ema_decay: 0
+  optim_g:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+  optim_d:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [200000]
+    gamma: 0.5
+
+  total_iter: 300000
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: !!float 1.0
+    reduction: mean
+  perceptual_opt:
+    type: PerceptualLoss
+    layer_weights:
+      'conv1_2': 0.1
+      'conv2_2': 0.1
+      'conv3_4': 1
+      'conv4_4': 1
+      'conv5_4': 1
+    vgg_type: vgg19
+    use_input_norm: true
+    range_norm: false
+    perceptual_weight: !!float 1.0
+    style_weight: 0
+    criterion: l1
+  gan_opt:
+    type: GANLoss
+    gan_type: vanilla
+    real_label_val: 1.0
+    fake_label_val: 0.0
+    loss_weight: !!float 1e-1
+
+  net_d_iters: 1
+  net_d_init_iters: 0
+
+# validation settings
+val:
+  pbar: true
+  val_freq: !!float 1e5
+  save_img: true
+  suffix: ~
+
+#  metrics:
+#    psnr: # metric name, can be arbitrary
+#      type: calculate_psnr
+#      crop_border: 4
+#      test_y_channel: false
+#    SSIM:
+#      type: calculate_ssim
+#      crop_border: 4
+#      test_y_channel: false
+#    NIQE:
+#      better: lower
+#      type: calculate_niqe
+#      crop_border: 4
+#    LPIPS:
+#      type: calculate_lpips
+#      crop_border: 4
+
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 1e5
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

@@ -1,0 +1,128 @@
+# Train PSNR-oriented RRDB on DF2K_OST dataset with blind degradation settings
+name: RRDB_DF2K_OST_Blind_x4
+model_type: Ours_Model
+scale: 4
+num_gpu: auto  # auto: can infer from your visible devices automatically. official: 4 GPUs
+manual_seed: 0
+
+pre_pad: 0
+tile_size: 800
+tile_pad: 32
+tile_process: False
+
+# the first degradation process
+resize_prob: [0.1, 0.85, 0.05]  # up, down, keep
+resize_range: [0.8, 1.2]
+gaussian_noise_prob: 0.5
+noise_range: [1, 12]
+poisson_scale_range: [0.05, 0.8]
+gray_noise_prob: 0.2
+jpeg_range: [75, 95]
+
+gt_size: 256
+queue_size: 144
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: DF2K_OST
+    type: OneStageDegradation_DF2K_Dataset
+    dataroot_all_gt: /home/chendu/data2_hdd10t/chendu/dataset/DF2K_OST/subimages_512 #path to DF2K_OST training dataset or your own training dataset
+
+    blur_kernel_size_min: 1
+    blur_kernel_size_max: 4
+    kernel_list: ['iso', 'aniso']
+    kernel_prob: [0.7, 0.3]
+    sinc_prob: 0.01
+    blur_sigma: [0.1, 1.0]
+    betag_range: [0.1, 2.0]
+    betap_range: [0.1, 1.0]
+
+    gt_size: 256
+    use_hflip: True
+    use_rot: False
+
+    # data loader
+    num_worker_per_gpu: 8
+    batch_size_per_gpu: 12
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+
+  val:
+    name: Set5
+    type: PairedImageDataset
+    dataroot_gt: datasets/Test/GT/Set5 #path to your own testing dataset, we also provide our validation GT dataset in "datasets/Test/GT/Set5"
+    dataroot_lq: datasets/Test/Blind_Degradation_Benchmark_LQ/Set5 #path to your own testing dataset, we also provide our validation LQ dataset in "datasets/Test/Blind_Degradation_Benchmark_LQ/Set5"
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: RRDBPSNet
+  scale: 4
+  num_in_ch: 3
+  num_out_ch: 3
+  num_feat: 64
+  num_block: 23
+  num_grow_ch: 32
+
+#The pretrained model is provided by us. We pretrain a PSNR-oriented RRDB model with bicubic degradations. Note that, ours RRDB backbone utilizes pixel-shuffle layer to
+#complete the upsample operation, which is different from the original RRDB backbone from ESRGAN that uses bilinear operation to upsample the resolution
+path:
+  pretrain_network_g: experiments/pretrained_models/RRDB-GAN/Bicubic_PSNR/RRDB_bicubic_PSNR.pth
+  param_key_g: params_ema
+  strict_load_g: true
+  resume_state: ~
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [200000]
+    gamma: 0.5
+
+  total_iter: 300000
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt_o:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+
+# Uncomment these for validation
+# validation settings
+val:
+ val_freq: !!float 5e4
+ save_img: True
+
+ metrics:
+   psnr: # metric name
+     type: calculate_psnr
+     crop_border: 4
+     test_y_channel: false
+   ssim: # metric name
+     type: calculate_ssim
+     crop_border: 4
+     test_y_channel: false
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 5e4
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

@@ -1,0 +1,56 @@
+# Test GAN-oriented SwinIR trained on our proposed PosNegGT dataset(with both positive and negative GT) with blind degradation settings
+name: SwinIRGAN_PosNegGT_Blind_Pos+Neg_x4
+model_type: Ours_PosNegGT_Model
+scale: 4
+num_gpu: 1  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+pre_pad: 0
+tile_size: 800
+tile_pad: 32
+tile_process: True
+
+datasets:
+  test_1:
+    name: Test-100
+    type: PairedImageDataset
+    dataroot_gt: datasets/Test/GT/Test-100/images/Original
+    dataroot_lq: datasets/Test/Blind_Degradation_Benchmark_LQ/Test-100/Blind_LR
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: SwinIR
+  upscale: 4
+  in_chans: 3
+  img_size: 64
+  window_size: 8
+  img_range: 1.
+  depths: [6, 6, 6, 6, 6, 6]
+  embed_dim: 180
+  num_heads: [6, 6, 6, 6, 6, 6]
+  mlp_ratio: 2
+  upsampler: 'pixelshuffle'
+  resi_connection: '1conv'
+
+# path
+path:
+  pretrain_network_g: experiments/pretrained_models/SwinIR-GAN/Blind_GAN_PosNegGT_Pos+Neg/SwinIR_PosNegGT_Pos+Neg_GAN_x4.pth
+  strict_load_g: true
+  param_key_g: params_ema
+
+# validation settings
+val:
+  save_img: true
+  suffix: 'SwinIRGANPosNegGTBlindPosNeg'  # add suffix to saved images, if None, use exp name
+
+#  metrics:
+#    psnr: # metric name, can be arbitrary
+#      type: calculate_psnr
+#      crop_border: 4
+#      test_y_channel: false
+#    ssim:
+#      type: calculate_ssim
+#      crop_border: 4
+#      test_y_channel: false

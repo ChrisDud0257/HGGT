@@ -1,0 +1,166 @@
+# Train GAN-oriented RRDB on our porposed PosNegGT dataset(with positive GT only) with blind degradation settings
+name: RRDBGAN_PosNegGT_Blind_Pos_x4
+model_type: Ours_PosGT_Model
+scale: 4
+num_gpu: auto  # auto: can infer from your visible devices automatically. official: 4 GPUs
+manual_seed: 0
+
+# the first degradation process
+resize_prob: [0.1, 0.85, 0.05]  # up, down, keep
+resize_range: [0.8, 1.2]
+gaussian_noise_prob: 0.5
+noise_range: [1, 12]
+poisson_scale_range: [0.05, 0.8]
+gray_noise_prob: 0.2
+jpeg_range: [75, 95]
+
+pre_pad: 0
+tile_size: 800
+tile_pad: 32
+tile_process: False
+
+gt_size: 256
+queue_size: 144
+
+# dataset and data loader settings
+datasets:
+  train:
+    name: PosNegGT0-20193
+    type: PosNegGTPosDataset
+    dataroot_all_gt: /home/chendu/data2_hdd10t/chendu/dataset/ForMultiGT/2/PublicInPaperForUpload/The1stRound/Train/images/0-20193
+    dataroot_all_json: /home/chendu/data2_hdd10t/chendu/dataset/ForMultiGT/2/PublicInPaperForUpload/The1stRound/Train/labels/0-20193
+
+    blur_kernel_size_min: 1
+    blur_kernel_size_max: 4
+    kernel_list: ['iso', 'aniso']
+    kernel_prob: [0.7, 0.3]
+    sinc_prob: 0.01
+    blur_sigma: [0.1, 1.0]
+    betag_range: [0.1, 2.0]
+    betap_range: [0.1, 1.0]
+
+    gt_size: 256
+    use_hflip: True
+    use_rot: False
+
+    # data loader
+    num_worker_per_gpu: 8
+    batch_size_per_gpu: 12
+    dataset_enlarge_ratio: 1
+    prefetch_mode: ~
+
+  val:
+    name: Set5
+    type: PairedImageDataset
+    dataroot_gt: datasets/Test/GT/Set5 #path to your own testing dataset, we also provide our validation GT dataset in "datasets/Test/GT/Set5"
+    dataroot_lq: datasets/Test/Blind_Degradation_Benchmark_LQ/Set5 #path to your own testing dataset, we also provide our validation LQ dataset in "datasets/Test/Blind_Degradation_Benchmark_LQ/Set5"
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: RRDBPSNet
+  scale: 4
+  num_in_ch: 3
+  num_out_ch: 3
+  num_feat: 64
+  num_block: 23
+  num_grow_ch: 32
+
+network_d:
+  type: UNetDiscriminatorSN
+  num_in_ch: 3
+  num_feat: 64
+  skip_connection: True
+
+# path
+path:
+  pretrain_network_g: experiments/pretrained_models/RRDB-GAN/Blind_PSNR/RRDB_DF2K_OST_Blind_PSNR_x4.pth #path to the pre-trained PSNR oriented model trained on blind degradations
+  param_key_g: params_ema
+  strict_load_g: true
+  resume_state: ~
+
+# training settings
+train:
+  ema_decay: 0.999
+  optim_g:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+  optim_d:
+    type: Adam
+    lr: !!float 1e-4
+    weight_decay: 0
+    betas: [0.9, 0.99]
+
+  scheduler:
+    type: MultiStepLR
+    milestones: [200000]
+    gamma: 0.5
+
+  total_iter: 300000
+  warmup_iter: -1  # no warm up
+
+  # losses
+  pixel_opt:
+    type: L1Loss
+    loss_weight: 1.0
+    reduction: mean
+
+  # perceptual loss (content and style losses)
+  perceptual_opt:
+    type: PerceptualLoss
+    layer_weights:
+      # before relu
+      'conv1_2': 0.1
+      'conv2_2': 0.1
+      'conv3_4': 1
+      'conv4_4': 1
+      'conv5_4': 1
+    vgg_type: vgg19
+    use_input_norm: true
+    perceptual_weight: !!float 1.0
+    style_weight: 0
+    range_norm: false
+    criterion: l1
+  # gan loss
+  gan_opt:
+    type: GANLoss
+    gan_type: vanilla
+    real_label_val: 1.0
+    fake_label_val: 0.0
+    loss_weight: !!float 1e-1
+
+  net_d_iters: 1
+  net_d_init_iters: 0
+
+# Uncomment these for validation
+# validation settings
+val:
+ val_freq: !!float 5e4
+ save_img: True
+
+ metrics:
+   psnr: # metric name
+     type: calculate_psnr
+     crop_border: 4
+     test_y_channel: false
+   ssim: # metric name
+     type: calculate_ssim
+     crop_border: 4
+     test_y_channel: false
+
+# logging settings
+logger:
+  print_freq: 100
+  save_checkpoint_freq: !!float 5e4
+  use_tb_logger: true
+  wandb:
+    project: ~
+    resume_id: ~
+
+# dist training settings
+dist_params:
+  backend: nccl
+  port: 29500

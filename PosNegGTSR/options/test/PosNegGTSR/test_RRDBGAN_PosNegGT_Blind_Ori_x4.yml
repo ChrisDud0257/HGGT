@@ -1,0 +1,51 @@
+# Test GAN-oriented AdaTarget trained on our proposed PosNegGT dataset(with original GT only) with blind degradation settings
+name: RRDBGAN_PosNegGT_Blind_Ori_x4
+model_type: Ours_Model
+scale: 4
+num_gpu: 1  # set num_gpu: 0 for cpu mode
+manual_seed: 0
+
+pre_pad: 0
+tile_size: 800
+tile_pad: 32
+tile_process: True
+
+datasets:
+  test_1:
+    name: Test-100
+    type: PairedImageDataset
+    dataroot_gt: datasets/Test/GT/Test-100/images/Original
+    dataroot_lq: datasets/Test/Blind_Degradation_Benchmark_LQ/Test-100/Blind_LR
+    io_backend:
+      type: disk
+
+# network structures
+network_g:
+  type: RRDBPSNet
+  scale: 4
+  num_in_ch: 3
+  num_out_ch: 3
+  num_feat: 64
+  num_block: 23
+  num_grow_ch: 32
+
+# path
+path:
+  pretrain_network_g: experiments/pretrained_models/RRDB-GAN/Blind_GAN_PosNegGT_Ori/RRDB_PosNegGT_Ori_GAN_x4.pth
+  strict_load_g: true
+  param_key_g: params_ema
+
+# validation settings
+val:
+  save_img: true
+  suffix: 'RRDBGANPosNegGTBlindOri'  # add suffix to saved images, if None, use exp name
+
+#  metrics:
+#    psnr: # metric name, can be arbitrary
+#      type: calculate_psnr
+#      crop_border: 4
+#      test_y_channel: false
+#    ssim:
+#      type: calculate_ssim
+#      crop_border: 4
+#      test_y_channel: false
