@@ -1,5 +1,7 @@
 # HGGT
 
+### [Paper Link](https://arxiv.org/abs/2303.13069)
+
 > **Human Guided Ground-truth Generation for Realistic Image Super-resolution** <br>
 > [Du CHEN\*](https://github.com/ChrisDud0257), [Jie LIANG\*](https://liangjie.xyz/), Xindong ZHANG, Ming LIU, Hui ZENG and [Lei ZHANG](https://www4.comp.polyu.edu.hk/~cslzhang/). <br>
 > In CVPR 2023.
