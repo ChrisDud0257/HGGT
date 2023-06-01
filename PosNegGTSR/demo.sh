@@ -45,7 +45,7 @@
 #If you skip Step1, you could just utilize our provided well-trained model in "experiments/pretrained_models/BSRGAN/Blind_PSNR" and modify the
 #parameters in the file "./train_BSGRAN/options/BSRGAN/train_BSRGAN_DF2K_OST_Blind_x4.json", please just modify the "pretrained_netG"
 #CUDA_VISIBLE_DEVICES=0 \
-#python -m torch.distributed.launch --nproc_per_node=1 --master_port=1234 ./train_BSGRAN/main_train_psnr.py --opt ./train_BSGRAN/options/BSRGAN/train_BSRGAN_DF2K_OST_Blind_x4.json --dist True
+#python -m torch.distributed.launch --nproc_per_node=1 --master_port=1234 ./train_BSGRAN/main_train_gan.py --opt ./train_BSGRAN/options/BSRGAN/train_BSRGAN_DF2K_OST_Blind_x4.json --dist True
 
 #CUDA_VISIBLE_DEVICES=0 \
 #python ./train_BSGRAN/main_test_bsrgan.py --model_path ././experiments/pretrained_models/BSRGAN/Blind_GAN_DF2K_OST/RRDB_DF2K_OST_GAN_x4.pth --exp_name BSRGAN_DF2K_OST_Blind_x4 --suffix BSRGANDF2KBlind
@@ -54,7 +54,7 @@
 #If you skip Step1, you could just utilize our provided well-trained model in "experiments/pretrained_models/LDL/Blind_PSNR/RRDB_DF2K_OST_Blind_PSNR_x4.pth" and modify the
 #parameters in the file "./options/train/PosNegGTSR/train_LDL_PosNegGT_Blind_Pos_x4.yml", please just modify the "path"
 #CUDA_VISIBLE_DEVICES=0 \
-#python -m torch.distributed.launch --nproc_per_node=1 --master_port=1234 ./train_BSGRAN/main_train_psnr.py --opt ./train_BSGRAN/options/BSRGAN/train_BSRGAN_PosNegGT_Blind_Pos_x4.json --dist True
+#python -m torch.distributed.launch --nproc_per_node=1 --master_port=1234 ./train_BSGRAN/main_train_gan.py --opt ./train_BSGRAN/options/BSRGAN/train_BSRGAN_PosNegGT_Blind_Pos_x4.json --dist True
 
 #CUDA_VISIBLE_DEVICES=0 \
 #python ./train_BSGRAN/main_test_bsrgan.py --model_path ././experiments/pretrained_models/BSRGAN/Blind_GAN_PosNegGT_Pos/RRDB_PosNegGT_Pos_GAN_x4.pth --exp_name BSRGAN_PosNegGT_Blind_Pos_x4 --suffix BSRGANPosNegGTBlindPos
