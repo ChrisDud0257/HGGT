@@ -2,7 +2,7 @@
 
 Official PyTorch code and dataset for our paper "HGGT" in CVPR 2023.
 
-### [Paper](https://arxiv.org/abs/2303.13069) | [Supplementary](https://www4.comp.polyu.edu.hk/~cslzhang/paper/CVPR2023_HGGT_supp.pdf)
+### [Paper](https://openaccess.thecvf.com/content/CVPR2023/papers/Chen_Human_Guided_Ground-Truth_Generation_for_Realistic_Image_Super-Resolution_CVPR_2023_paper.pdf) | [Supplementary](https://openaccess.thecvf.com/content/CVPR2023/supplemental/Chen_Human_Guided_Ground-Truth_CVPR_2023_supplemental.pdf) | [Arxiv Version](https://arxiv.org/abs/2303.13069)
 
 > **Human Guided Ground-truth Generation for Realistic Image Super-resolution** <br>
 > [Du CHEN\*](https://github.com/ChrisDud0257), [Jie LIANG\*](https://liangjie.xyz/), Xindong ZHANG, Ming LIU, Hui ZENG and [Lei ZHANG](https://www4.comp.polyu.edu.hk/~cslzhang/). <br>
@@ -399,11 +399,13 @@ This project is released under the Apache 2.0 license.
 ## Citation
 
 ```bash
-@inproceedings{chen2023human,
-  title={Human Guided Ground-truth Generation for Realistic Image Super-resolution},
-  author={Chen, Du and Liang, Jie and Zhang, Xindong and Liu, Ming and Zeng, Hui and Zhang, Lei},
-  booktitle={Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition},
-  year={2023}
+@InProceedings{Chen_2023_CVPR,
+    author    = {Chen, Du and Liang, Jie and Zhang, Xindong and Liu, Ming and Zeng, Hui and Zhang, Lei},
+    title     = {Human Guided Ground-Truth Generation for Realistic Image Super-Resolution},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2023},
+    pages     = {14082-14091}
 }
 ```
 
