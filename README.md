@@ -8,6 +8,13 @@ Official PyTorch code and dataset for our paper "HGGT" in CVPR 2023.
 > [Du CHEN\*](https://github.com/ChrisDud0257), [Jie LIANG\*](https://liangjie.xyz/), Xindong ZHANG, Ming LIU, Hui ZENG and [Lei ZHANG](https://www4.comp.polyu.edu.hk/~cslzhang/). <br>
 > Accepted by CVPR 2023.<br>
 
+## Copyright, License and Agreement for the HGGT dataset Usage
+1. Please note that this dataset is made available for non-commercial academic research purposes **ONLY**.
+2. You agree not to reproduce, duplicate, copy, sell, trade, resell or exploit for any commercial purposes, any portion of the images and any portion of derived data.
+3. You agree not to further copy, publish or distribute any portion of the HGGT dataset. Except, for internal use at a single site within the same organization it is allowed to make copies of the dataset.
+4. The image contents are released upon request for research purposes **ONLY**.
+5. Any violation of this protocol will be at his own risk. If any of the images include your information and you would like to remove them, please kindly inform us, and we will remove them from our dataset immediately.
+
 
 ## Abstract
 How to generate the ground-truth (GT) image is a critical
