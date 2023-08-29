@@ -23,7 +23,8 @@ datasets:
 ## HGGT Training Dataset
 We provide the training dataset, named HGGT, it has 20193 sets of training enhanced GTs together with their label information.
 
-- Firstly, please download the training images from [GoogleDrive](https://drive.google.com/file/d/1RVc6zZ8XfcAxA11HCDwKLtScysdP6MK1/view?usp=share_link). The dataset structures are as follows:
+- Firstly, please download the training images from [GoogleDrive](https://drive.google.com/file/d/1RVc6zZ8XfcAxA11HCDwKLtScysdP6MK1/view?usp=share_link), noting that, this link provides the whole packed dataset, since some researchers find it difficult to download such a big zip, we then split the training dataset of HGGT into 10 sub files for more friendly downloading, please just download them through 
+another [GoogleDrive](https://drive.google.com/drive/folders/14XyuvdE8_OlF7kxxPbC0ci_U_z1_Yz0K?usp=sharing) link.The dataset structures are as follows:
 ```bash
 Train/
     images/
