@@ -8,7 +8,9 @@ Official PyTorch code and dataset for our paper "HGGT" in CVPR 2023.
 > [Du CHEN\*](https://github.com/ChrisDud0257), [Jie LIANG\*](https://liangjie.xyz/), Xindong ZHANG, Ming LIU, Hui ZENG and [Lei ZHANG](https://www4.comp.polyu.edu.hk/~cslzhang/). <br>
 > Accepted by CVPR 2023.<br>
 
-- News (2024-01-08): We provide the [BaiduDrive](https://pan.baidu.com/s/1Z5pO-gwV12tK_yoKK6vg6A?pwd=3uai) Link towards the Training datset parts in HGGT. 
+## 🎉  News
+- **2026-06-05**: Please note that all old Google Drive download links have expired. To download all datasets and pre-trained model weights from Google Drive, kindly use the latest links [GoogleDrive](https://drive.google.com/drive/folders/12Ic1KEPW_zGbX0U09a7YD3xNlT14cbmC?usp=sharing).
+- **2024-01-08**: We provide the [BaiduDrive](https://pan.baidu.com/s/1Z5pO-gwV12tK_yoKK6vg6A?pwd=3uai) Link towards the Training datset parts in HGGT. 
 
 ## Copyright, License and Agreement for the HGGT dataset Usage
 1. Please note that this dataset is made available for non-commercial academic research purposes **ONLY**.
